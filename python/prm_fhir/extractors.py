@@ -1,15 +1,16 @@
 """
-### CODE OWNERS: Shea Parkes
+### CODE OWNERS: Shea Parkes, Steve Gredell
 
 ### OBJECTIVE:
   Extraction methods for relevant items.
 
 ### DEVELOPER NOTES:
-  <none>
+  The lab dimenion table will likely be hand-entered.
 """
-
+import csv
 import typing
 from collections import OrderedDict
+from pathlib import Path
 
 from fhirclient.client import FHIRClient
 import fhirclient.models.patient as fhirpatient
@@ -29,6 +30,20 @@ def _create_fhir_client(
         'api_base': url_fhir,
     })
 
+
+def _generate_patient_fhir_ids(
+        fhir_client: FHIRClient,
+        search_struct: dict
+    ) -> "typing.Generator[str]":
+    """Generate FHIR IDs from a patient search struct."""
+
+    search_object = fhirpatient.Patient.where(search_struct)
+    bundle = search_object.perform(fhir_client.server)
+
+    for patient in bundle.entry:
+        yield patient.resource.id
+
+
 def extract_patients(
         url_fhir: str,
         search_struct: dict
@@ -37,15 +52,12 @@ def extract_patients(
 
     _client = _create_fhir_client(url_fhir)
 
-    #TODO: Search shit
-    search_object = fhirpatient.Patient.where(search_struct)
-    bundle = search_object.perform(_client.server)
-
-    for patient in bundle.entry:
-        for name in patient.resource.name:
+    for patient_fhir_id in _generate_patient_fhir_ids(_client, search_struct):
+        patient = fhirpatient.Patient.read(patient_fhir_id, _client.server)
+        for name in patient.name:
             patientname = ", ".join([name.family[0], name.given[0]])
-        dob = patient.resource.birthDate.isostring
-        for ad in patient.resource.address:
+        dob = patient.birthDate.isostring
+        for ad in patient.address:
             address = ad.city
 
         yield OrderedDict([
@@ -53,6 +65,33 @@ def extract_patients(
             ('dob', dob),
             ('address', address),
         ])
+
+
+def extract_results(
+        url_fhir: str,
+        name_fhir: str,
+        patient_search_struct: dict,
+        path_csv_labs: Path,
+    ) -> "typing.Generator[OrderedDict]":
+    """Extract all the results from a FHIR for the provided patient/lab combinations."""
+
+    assert name_fhir in {'Epic', 'INPC'}
+
+    _client = _create_fhir_client(url_fhir)
+
+    with path_csv_labs.open() as csv_labs:
+        reader_labs = csv.DictReader(csv_labs)
+        for lab_record in reader_labs:
+            for patient_id in _generate_patient_fhir_ids(url_fhir, patient_search_struct):
+                raise NotImplementedError()
+
+                yield OrderedDict([
+                    ('name', patientname),
+                    ('loinc', loinc),
+                    ('fhir', name_fhir),
+                    ('result', result),
+                ])
+
 
 if __name__ == "__main__":
     url = 'https://open-ic.epic.com/FHIR/api/FHIR/DSTU2'
