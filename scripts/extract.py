@@ -35,12 +35,14 @@ if __name__ == "__main__":
         ]
     PATH_PATIENTS = PATH_DATA / "patients.csv"
     with PATH_PATIENTS.open("w", newline="") as patients:
-        fieldnames = prm_fhir.extractors.extract_patients.fieldnames
-        writer = csv.DictWriter(
+        FIELDNAMES = prm_fhir.extractors.extract_patients.fieldnames
+        WRITER = csv.DictWriter(
             patients,
-            fieldnames=fieldnames,
+            fieldnames=FIELDNAMES,
             )
-        writer.writeheader()
+        WRITER.writeheader()
         for url in URLS:
             for search_struct in SEARCH_STRUCTS:
-                writer.writerows(prm_fhir.extractors.extract_patients(url, search_struct))
+                WRITER.writerows(
+                    prm_fhir.extractors.extract_patients(url, search_struct)
+                    )
