@@ -56,8 +56,15 @@ def extract_results(
 
     _client = _create_fhir_client(url_fhir)
 
-    yield OrderedDict([
-        ('name', patientname),
-        ('loinc', loinc),
-        ('result', result),
-    ])
+    with path_csv_labs.open() as csv_labs, path_csv_patients.open() as csv_patients:
+        reader_labs = csv.DictReader(csv_labs)
+        reader_patients = csv.DictReader(csv_patients)
+        for lab_record in reader_labs:
+            for patient_record in reader_patients:
+                raise NotImplementedError()
+
+                yield OrderedDict([
+                    ('name', patientname),
+                    ('loinc', loinc),
+                    ('result', result),
+                ])
