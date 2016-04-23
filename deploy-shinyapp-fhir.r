@@ -12,5 +12,5 @@ library(rsconnect)
 
 rsconnect::deployApp(
   appDir=getwd()
-  ,appName='shinyapp-fhir'
+  ,appName='epic-fhir'
   )
