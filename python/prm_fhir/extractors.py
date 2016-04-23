@@ -102,13 +102,8 @@ def extract_results(
 
 
 def _get_patient_name(patient_url):
-
-
-
-
     result = patient_url.split('/')
-    print(result)
-    url_fhir = "/".join(result[0:3])
+    url_fhir = "/".join(result[0:7])
     patient_fhir_id = result[-1]
     _client = _create_fhir_client(url_fhir)
     patient = fhirpatient.Patient.read(patient_fhir_id, _client.server)
@@ -119,6 +114,7 @@ def _get_patient_name(patient_url):
 if __name__ == "__main__":
 
     url = 'https://open-ic.epic.com/FHIR/api/FHIR/DSTU2'
+    #url = 'http://134.68.33.32/fhir/'
     search_struct = {'family':'Argonaut', 'given':'Jason'}
     labs_csv = Path("c:/Users/Steve.Gredell/repos/epic-fhir/data/labs.csv")
     extract = extract_patients(url,search_struct)
