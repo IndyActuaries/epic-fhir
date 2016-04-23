@@ -5,7 +5,7 @@
   Extraction methods for relevant items.
 
 ### DEVELOPER NOTES:
-  <none>
+  The lab dimenion table will likely be hand-entered.
 """
 import csv
 import typing
