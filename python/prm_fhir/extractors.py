@@ -12,8 +12,10 @@ import typing
 from collections import OrderedDict
 from pathlib import Path
 
+
 from fhirclient.client import FHIRClient
 import fhirclient.models.patient as fhirpatient
+import fhirclient.models.observation as fhirobs
 
 # =============================================================================
 # LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
@@ -82,20 +84,48 @@ def extract_results(
     with path_csv_labs.open() as csv_labs:
         reader_labs = csv.DictReader(csv_labs)
         for lab_record in reader_labs:
-            for patient_id in _generate_patient_fhir_ids(url_fhir, patient_search_struct):
-                raise NotImplementedError()
+            for patient_id in _generate_patient_fhir_ids(_client, patient_search_struct):
+                lab_search_struct = {'patient': patient_id, 'code':lab_record['loinc']}
+                search_object = fhirobs.Observation.where(lab_search_struct)
+                lab_bundle = search_object.perform(_client.server)
 
-                yield OrderedDict([
-                    ('name', patientname),
-                    ('loinc', loinc),
-                    ('fhir', name_fhir),
-                    ('result', result),
-                ])
+                for lab in lab_bundle.entry:
+                    for code in lab.resource.code.coding:
+                        loinc = code.code
 
+                    yield OrderedDict([
+                        ('name', _get_patient_name(lab.resource.subject.reference)),
+                        ('loinc', loinc),
+                        ('fhir', name_fhir),
+                        ('result', lab.resource.valueQuantity.value),
+                    ])
+
+
+def _get_patient_name(patient_url):
+
+
+
+
+    result = patient_url.split('/')
+    print(result)
+    url_fhir = "/".join(result[0:3])
+    patient_fhir_id = result[-1]
+    _client = _create_fhir_client(url_fhir)
+    patient = fhirpatient.Patient.read(patient_fhir_id, _client.server)
+    for name in patient.name:
+        patientname = ", ".join([name.family[0], name.given[0]])
+    return patientname
 
 if __name__ == "__main__":
+
     url = 'https://open-ic.epic.com/FHIR/api/FHIR/DSTU2'
     search_struct = {'family':'Argonaut', 'given':'Jason'}
+    labs_csv = Path("c:/Users/Steve.Gredell/repos/epic-fhir/data/labs.csv")
     extract = extract_patients(url,search_struct)
     for pat in extract:
         print(pat)
+
+    print("Extracting labs\n\n")
+    extract_labs = extract_results(url, "Epic", search_struct, labs_csv)
+    for lab in extract_labs:
+        print(lab)
