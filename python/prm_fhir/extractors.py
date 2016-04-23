@@ -9,6 +9,7 @@
 """
 import csv
 import typing
+import traceback
 from collections import OrderedDict
 from pathlib import Path
 
@@ -98,14 +99,39 @@ def extract_results(
                 lab_bundle = search_object.perform(_client.server)
 
                 for lab in lab_bundle.entry:
-                    for code in lab.resource.code.coding:
-                        loinc = code.code
+                    try:
+                        for code in lab.resource.code.coding:
+                            if code is None:
+                                loinc = ""
+                            else:
+                                loinc = code.code
+                    except AttributeError:
+                        print("Failed, probably trying to read an Observation as an OperationOutcome.")
+                        traceback.print_exc()
+
+
+
+                    try:
+                        value = lab.resource.valueQuantity.value
+                        if value is None:
+                            value = ""
+                    except AttributeError:
+                        print("Failed, probably trying to read an Observation as an OperationOutcome.")
+                        traceback.print_exc()
+
+                    try:
+                        patient_name = _get_patient_name(lab.resource.subject.reference)
+                        if patient_name is None:
+                            patient_name = ""
+                    except AttributeError:
+                        print("Failed, probably trying to read an Observation as an OperationOutcome.")
+                        traceback.print_exc()
 
                     yield OrderedDict([
-                        ('name', _get_patient_name(lab.resource.subject.reference)),
+                        ('name', patient_name),
                         ('loinc', loinc),
                         ('fhir', name_fhir),
-                        ('result', lab.resource.valueQuantity.value),
+                        ('result', value),
                     ])
 
 
@@ -116,7 +142,10 @@ def _get_patient_name(patient_url):
     _client = _create_fhir_client(url_fhir)
     patient = fhirpatient.Patient.read(patient_fhir_id, _client.server)
     for name in patient.name:
-        patientname = ", ".join([name.family[0], name.given[0]])
+        if name is None:
+            patientname = ""
+        else:
+            patientname = ", ".join([name.family[0], name.given[0]])
     return patientname
 
 if __name__ == "__main__":
