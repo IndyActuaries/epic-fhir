@@ -32,16 +32,13 @@ def _create_fhir_client(
 
 
 def _generate_patient_fhir_ids(
-        url_fhir: str,
+        fhir_client: FHIRClient,
         search_struct: dict
     ) -> "typing.Generator[str]":
     """Generate FHIR IDs from a patient search struct."""
 
-    _client = _create_fhir_client(url_fhir)
-
-    #TODO: Search shit
     search_object = fhirpatient.Patient.where(search_struct)
-    bundle = search_object.perform(_client.server)
+    bundle = search_object.perform(fhir_client.server)
 
     for patient in bundle.entry:
         yield patient.resource.id
@@ -53,12 +50,14 @@ def extract_patients(
     ) -> "typing.Generator[OrderedDict]":
     """Generate patient records from a FHIR endpoint."""
 
-    for patient_fhir_id in _generate_patient_fhir_ids(url_fhir, search_struct):
-        # TODO: Requery on IDs
-        for name in patient.resource.name:
+    _client = _create_fhir_client(url_fhir)
+
+    for patient_fhir_id in _generate_patient_fhir_ids(_client, search_struct):
+        patient = fhirpatient.Patient.read(patient_fhir_id, _client.server)
+        for name in patient.name:
             patientname = ", ".join([name.family[0], name.given[0]])
-        dob = patient.resource.birthDate.isostring
-        for ad in patient.resource.address:
+        dob = patient.birthDate.isostring
+        for ad in patient.address:
             address = ad.city
 
         yield OrderedDict([
