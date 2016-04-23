@@ -25,13 +25,23 @@ PATH_DATA = Path(prm_fhir.extractors.__file__).parents[2] / "data"
 
 
 if __name__ == "__main__":
-    URLS = [
-        "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2",
-        #"http://134.68.33.32/fhir/",
-        ]
-    SEARCH_STRUCTS = [
-        {"family": "Argonaut", "given": "*"},
-        {"family": "Ragsdale", "given": "*"},
+    ARGS = [
+        {
+            "url_fhir": "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2",
+            "search_struct": {"family": "Argonaut", "given": "*"},
+        },
+        {
+            "url_fhir": "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2",
+            "search_struct": {"family": "Ragsdale", "given": "*"},
+        },
+#        {
+#            "url_fhir": "http://134.68.33.32/fhir/",
+#            "search_struct": {"family": "Argonaut"},
+#        },
+#        {
+#            "url_fhir": "http://134.68.33.32/fhir/",
+#            "search_struct": {"family": "Ragsdale"},
+#        },
         ]
     PATH_PATIENTS = PATH_DATA / "patients.csv"
     with PATH_PATIENTS.open("w", newline="") as patients:
@@ -41,8 +51,7 @@ if __name__ == "__main__":
             fieldnames=FIELDNAMES,
             )
         WRITER.writeheader()
-        for url in URLS:
-            for search_struct in SEARCH_STRUCTS:
-                WRITER.writerows(
-                    prm_fhir.extractors.extract_patients(url, search_struct)
-                    )
+        for args in ARGS:
+            WRITER.writerows(
+                prm_fhir.extractors.extract_patients(**args)
+                )
