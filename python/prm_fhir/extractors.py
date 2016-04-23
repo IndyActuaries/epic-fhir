@@ -66,6 +66,12 @@ def extract_patients(
             ('address', address),
         ])
 
+extract_patients.fieldnames = [
+    'name',
+    'dob',
+    'address',
+]
+
 
 def extract_results(
         url_fhir: str,
