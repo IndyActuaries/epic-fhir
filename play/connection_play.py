@@ -1,11 +1,11 @@
 """
-### CODE OWNERS: Shea Parkes, Kyle Baird
+### CODE OWNERS: Shea Parkes
 
 ### OBJECTIVE:
   Prove I can connect.
 
 ### DEVELOPER NOTES:
-  <none>
+  <What future developers need to know.>
 """
 
 from fhirclient import client
@@ -14,14 +14,28 @@ from fhirclient import client
 # LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
 # =============================================================================
 
-settings = {
+reg_settings = {
+    'app_id': 'prm_analytics',
+    'api_base': 'http://134.68.33.32/fhir/'
+}
+epic_settings = {
     'app_id': 'prm_analytics',
     'api_base': 'https://open-ic.epic.com/FHIR/api/FHIR/DSTU2'
 }
-epic = client.FHIRClient(settings=settings)
 
+epic = client.FHIRClient(settings=epic_settings)
+reg = client.FHIRClient(settings=reg_settings)
 import fhirclient.models.patient as p
-patient = p.Patient.read('Tbt3KuCY0B5PSrJvCu2j-PlK.aiHsu2xUjUM8bWpetXoB', epic.server)
-patient.birthDate.isostring
 
-epic.human_name(patient.name[0])
+
+ragsdales = p.Patient.where(struct={'family':'Ragsdale', 'given':'*'})
+argonauts = p.Patient.where(struct={'family':'Argonaut', 'given':'*'})
+bundle_ragsdales = ragsdales.perform(epic.server)
+bundle_argonauts = argonauts.perform(epic.server)
+
+
+for patient in bundle_ragsdales.entry:
+    for id in patient.resource.identifier:
+        print(id.system)
+        print(id.use)
+        print(id.value)
