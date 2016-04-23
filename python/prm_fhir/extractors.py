@@ -12,7 +12,6 @@ import typing
 from collections import OrderedDict
 from pathlib import Path
 
-
 from fhirclient.client import FHIRClient
 import fhirclient.models.patient as fhirpatient
 import fhirclient.models.observation as fhirobs
