@@ -1,0 +1,12 @@
+loinc_code,loinc_desc,category,unit_desc
+14646-4,HDLc SerPl-sCnc,HDL,
+2085-9,HDLc SerPl-mCnc,HDL,
+26017-4,HDL3c SerPl-sCnc,HDL,
+9833-5,HDL3c SerPl-mCnc,HDL,
+2089-1,LDLc SerPl-mCnc,LDL,
+22748-8,LDLc SerPl-sCnc,LDL,
+18262-6,LDLc SerPl Direct AssaymCnc,LDL,
+2091-7,VLDLc SerPl-mCnc,VLDL,
+25371-6,VLDLc SerPl-sCnc,VLDL,
+4548-4,Hgb A1c % Bld,Hemoglobin,
+17856-6,Hgb A1c % Bld HPLC,Hemoglobin,
