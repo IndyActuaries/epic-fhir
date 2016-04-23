@@ -127,11 +127,20 @@ def extract_results(
                         print("Failed, probably trying to read an Observation as an OperationOutcome.")
                         traceback.print_exc()
 
+                    try:
+                        date = lab.resource.effectiveDateTime.isostring
+                        if date is None:
+                            date = ""
+                    except AttributeError:
+                        print("Failed, probably trying to read an Observation as an OperationOutcome.")
+                        traceback.print_exc()
+
                     yield OrderedDict([
                         ('name', patient_name),
                         ('loinc', loinc),
                         ('fhir', name_fhir),
                         ('result', value),
+                        ('date', date)
                     ])
 
 
