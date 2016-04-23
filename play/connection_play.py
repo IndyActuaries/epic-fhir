@@ -18,10 +18,10 @@ settings = {
     'app_id': 'prm_analytics',
     'api_base': 'https://open-ic.epic.com/FHIR/api/FHIR/DSTU2'
 }
-smart = client.FHIRClient(settings=settings)
+epic = client.FHIRClient(settings=settings)
 
 import fhirclient.models.patient as p
-patient = p.Patient.read('Tbt3KuCY0B5PSrJvCu2j-PlK.aiHsu2xUjUM8bWpetXoB', smart.server)
+patient = p.Patient.read('Tbt3KuCY0B5PSrJvCu2j-PlK.aiHsu2xUjUM8bWpetXoB', epic.server)
 patient.birthDate.isostring
 
-smart.human_name(patient.name[0])
+epic.human_name(patient.name[0])
