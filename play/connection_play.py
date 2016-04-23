@@ -1,11 +1,11 @@
 """
-### CODE OWNERS: Shea Parkes
+### CODE OWNERS: Shea Parkes, Kyle Baird
 
 ### OBJECTIVE:
   Prove I can connect.
 
 ### DEVELOPER NOTES:
-  <What future developers need to know.>
+  <none>
 """
 
 from fhirclient import client
