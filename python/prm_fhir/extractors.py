@@ -57,8 +57,11 @@ def extract_patients(
         for name in patient.name:
             patientname = ", ".join([name.family[0], name.given[0]])
         dob = patient.birthDate.isostring
-        for ad in patient.address:
-            address = ad.city
+        if patient.address is None:
+            address = ""
+        else:
+            for ad in patient.address:
+                address = ad.city
 
         yield OrderedDict([
             ('name', patientname),
