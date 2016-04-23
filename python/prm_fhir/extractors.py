@@ -61,8 +61,8 @@ def extract_results(
         url_fhir: str,
         name_fhir: str,
         path_csv_labs: Path,
-        path_csv_patients: Path,
-    ) -> typing.Generator[OrderedDict]:
+        path_csv_patients: Path
+    ) -> "typing.Generator[OrderedDict]":
     """Extract all the results from a FHIR for the provided patient/lab combinations."""
 
     assert name_fhir in {'Epic', 'INPC'}
