@@ -7,9 +7,10 @@
 ### DEVELOPER NOTES:
   <none>
 """
-
+import csv
 import typing
 from collections import OrderedDict
+from pathlib import Path
 
 from fhirclient.client import FHIRClient
 
@@ -28,6 +29,7 @@ def _create_fhir_client(
         'api_base': url_fhir,
     })
 
+
 def extract_patients(
         url_fhir: str,
         search_struct: dict,
@@ -42,4 +44,20 @@ def extract_patients(
         ('name', patientname),
         ('dob', isodate),
         ('address', blah),
+    ])
+
+
+def extract_results(
+        url_fhir,
+        path_csv_labs: Path,
+        path_csv_patients: Path,
+    ) -> typing.Generator[OrderedDict]:
+    """Extract all the results from a FHIR for the provided patient/lab combinations."""
+
+    _client = _create_fhir_client(url_fhir)
+
+    yield OrderedDict([
+        ('name', patientname),
+        ('loinc', loinc),
+        ('result', result),
     ])
