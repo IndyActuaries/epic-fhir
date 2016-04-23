@@ -48,11 +48,14 @@ def extract_patients(
 
 
 def extract_results(
-        url_fhir,
+        url_fhir: str,
+        name_fhir: str,
         path_csv_labs: Path,
         path_csv_patients: Path,
     ) -> typing.Generator[OrderedDict]:
     """Extract all the results from a FHIR for the provided patient/lab combinations."""
+
+    assert name_fhir in {'Epic', 'INPC'}
 
     _client = _create_fhir_client(url_fhir)
 
@@ -66,5 +69,6 @@ def extract_results(
                 yield OrderedDict([
                     ('name', patientname),
                     ('loinc', loinc),
+                    ('fhir', name_fhir),
                     ('result', result),
                 ])
