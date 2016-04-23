@@ -31,11 +31,11 @@ def _create_fhir_client(
     })
 
 
-def extract_patients(
+def _generate_patient_fhir_ids(
         url_fhir: str,
         search_struct: dict
-    ) -> "typing.Generator[OrderedDict]":
-    """Generate patient records from a FHIR endpoint."""
+    ) -> "typing.Generator[str]":
+    """Generate FHIR IDs from a patient search struct."""
 
     _client = _create_fhir_client(url_fhir)
 
@@ -44,6 +44,17 @@ def extract_patients(
     bundle = search_object.perform(_client.server)
 
     for patient in bundle.entry:
+        yield patient.resource.id
+
+
+def extract_patients(
+        url_fhir: str,
+        search_struct: dict
+    ) -> "typing.Generator[OrderedDict]":
+    """Generate patient records from a FHIR endpoint."""
+
+    for patient_fhir_id in _generate_patient_fhir_ids(url_fhir, search_struct):
+        # TODO: Requery on IDs
         for name in patient.resource.name:
             patientname = ", ".join([name.family[0], name.given[0]])
         dob = patient.resource.birthDate.isostring
@@ -60,8 +71,8 @@ def extract_patients(
 def extract_results(
         url_fhir: str,
         name_fhir: str,
+        patient_search_struct: dict,
         path_csv_labs: Path,
-        path_csv_patients: Path
     ) -> "typing.Generator[OrderedDict]":
     """Extract all the results from a FHIR for the provided patient/lab combinations."""
 
@@ -69,11 +80,10 @@ def extract_results(
 
     _client = _create_fhir_client(url_fhir)
 
-    with path_csv_labs.open() as csv_labs, path_csv_patients.open() as csv_patients:
+    with path_csv_labs.open() as csv_labs:
         reader_labs = csv.DictReader(csv_labs)
-        reader_patients = csv.DictReader(csv_patients)
         for lab_record in reader_labs:
-            for patient_record in reader_patients:
+            for patient_id in _generate_patient_fhir_ids(url_fhir, patient_search_struct):
                 raise NotImplementedError()
 
                 yield OrderedDict([
