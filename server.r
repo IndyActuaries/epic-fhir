@@ -1,4 +1,4 @@
-#' ### CODE OWNERS: Shea Parkes
+#' ### CODE OWNERS: Shea Parkes, Kyle Baird
 #'
 #' ### OBJECTIVE:
 #'   * Server side code of Epic FHIR Shiny App.
