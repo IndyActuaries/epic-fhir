@@ -23,11 +23,7 @@ df.results <- read.csv(
   ,header = TRUE
   ,stringsAsFactors = FALSE
   )
-df.results$date.r <- ifelse(
-  df.results$fhir == "Epic"
-  ,as.POSIXct(strptime(df.results$date, "%Y-%m-%dT%H:%M:%SZ"))
-  ,as.POSIXct(strptime(substr(df.results$date, 1, 19), "%Y-%m-%dT%H:%M:%S"))
-  )
+df.results$date.r <- as.POSIXct(strptime(substr(df.results$date, 1, 19), "%Y-%m-%dT%H:%M:%S"))
 df.results$name <- properCase(df.results$name)
 df.patients <- read.csv(
   paste0(path.dir.source, "patients.csv")
