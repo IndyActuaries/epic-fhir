@@ -47,9 +47,9 @@ fit_cts <- function(
   ,result.limit.min
   ) {
 
-  # patient <- "Argonaut, jessica"
-  # code <- "8480-6"
-  # fhirs <- c('Epic', 'INPC')
+  # patient <- "Argonaut, jessica"; code <- "8480-6"; fhirs <- c('Epic', 'INPC')
+  # cts.scale <- 1; cts.order <- 1; result.limit.max<-100000; result.limit.min <- 0
+  
   
   data.patient <- df.results %>% 
     filter(
@@ -88,6 +88,7 @@ fit_cts <- function(
         ,sser=0
         ,svar=0
       )
+      df.pred <- c('None')
       suppressWarnings(ts.model <- car(
         data.model$date.float
         ,data.model$result
@@ -104,6 +105,15 @@ fit_cts <- function(
         ,sser = ts.model$sser
         ,svar = ts.model$svar
       )
+      #str(ts.model)
+      df.pred <- data.frame(
+        date.r = as.POSIXct(ts.model$pretime*60*60*24, origin='1970-01-01')
+        ,result = ts.model$predict
+        ,result_units = 'N/A'
+        ,fhir='Prediction'
+        ,sser=0
+        ,svar=0
+      )
     }
     ,error=function(e){print('Caught error')}
     
@@ -119,6 +129,9 @@ fit_cts <- function(
       ,"fhir"
       ) %>% 
     left_join(model.munge, by = "date.r")
+  if('data.frame' %in% class(df.pred)){
+    data.return <- rbind(data.return, df.pred)
+  }
   
   return(data.return)
   }
