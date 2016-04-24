@@ -22,7 +22,7 @@ df.results <- read.csv(
   ,header = TRUE
   ,stringsAsFactors = FALSE
   )
-df.results$date.r <- strptime(df.results$date, "%Y-%m-%dT%H:%M:%SZ")
+df.results$date.r <- as.POSIXct(strptime(df.results$date, "%Y-%m-%dT%H:%M:%SZ"))
 df.patients <- read.csv(
   paste0(path.dir.source, "patients.csv")
   ,header = TRUE
