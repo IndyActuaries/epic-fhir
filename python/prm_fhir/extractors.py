@@ -102,38 +102,42 @@ def extract_results(
                     try:
                         for code in lab.resource.code.coding:
                             if code is None:
-                                loinc = ""
+                                continue
                             else:
                                 loinc = code.code
                     except AttributeError:
                         print("Failed, probably trying to read an Observation as an OperationOutcome.")
                         traceback.print_exc()
+                        continue
 
 
 
                     try:
                         value = lab.resource.valueQuantity.value
                         if value is None:
-                            value = ""
+                            continue
                     except AttributeError:
                         print("Failed, probably trying to read an Observation as an OperationOutcome.")
                         traceback.print_exc()
+                        continue
 
                     try:
                         patient_name = _get_patient_name(lab.resource.subject.reference)
                         if patient_name is None:
-                            patient_name = ""
+                            continue
                     except AttributeError:
                         print("Failed, probably trying to read an Observation as an OperationOutcome.")
                         traceback.print_exc()
+                        continue
 
                     try:
                         date = lab.resource.effectiveDateTime.isostring
                         if date is None:
-                            date = ""
+                            continue
                     except AttributeError:
                         print("Failed, probably trying to read an Observation as an OperationOutcome.")
                         traceback.print_exc()
+                        continue
 
                     yield OrderedDict([
                         ('name', patient_name),
