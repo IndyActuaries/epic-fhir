@@ -109,6 +109,7 @@ def extract_results(
                                     continue
                                 else:
                                     loinc = code.code
+                                    loinc_desc = code.display
                         except AttributeError:
                             print("Failed, probably trying to read an Observation as an OperationOutcome.")
                             traceback.print_exc()
@@ -146,6 +147,7 @@ def extract_results(
                         yield OrderedDict([
                             ('name', patient_name),
                             ('loinc', loinc),
+                            ('loinc_desc', loinc_desc),
                             ('fhir', name_fhir),
                             ('result', value),
                             ('date', date)
@@ -165,12 +167,21 @@ def extract_results(
                         _idx_loinc = i
                 if _idx_loinc is None:
                     continue
-                yield entry
+
+                yield OrderedDict([
+                    ('name', patient_name),
+                    ('loinc', loinc),
+                    ('loinc_desc', loinc_desc),
+                    ('fhir', name_fhir),
+                    ('result', value),
+                    ('date', date)
+                ])
 
 
 extract_results.fieldnames = [
     'name',
     'loinc',
+    'loinc_desc',
     'fhir',
     'result',
     'date',
