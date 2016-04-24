@@ -62,8 +62,7 @@ def extract_patients(
         if patient.address is None:
             address = ""
         else:
-            for ad in patient.address:
-                address = ad.city
+            address = _format_address(patient.address)
 
         yield OrderedDict([
             ('name', patientname),
@@ -212,6 +211,14 @@ def _get_patient_name(name_fhir, patient_id):
             patientname = ", ".join([name.family[0], name.given[0]])
 
     return patientname
+
+
+def _format_address(address_resource):
+    return "{city} {state} {zip}".format(
+        city=address_resource.city,
+        state=address_resource.state,
+        zip=address_resource.postalCode,
+    )
 
 
 if __name__ == "__main__":
