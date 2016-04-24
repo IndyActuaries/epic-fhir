@@ -138,7 +138,10 @@ shinyServer(function(input, output) {
   
   
   output$labsTable <- renderDataTable({
-    GetModelResults() %>%
+    GetModelResults() %>% 
+      mutate(
+        stdev = sqrt(svar)
+        ) %>%
       dplyr::select(
         FHIR_Source=fhir
         ,Date_Time=date.r
@@ -146,6 +149,7 @@ shinyServer(function(input, output) {
         ,Units=result_units
         ,sser
         ,svar
+        ,stdev
       )
   })
   
