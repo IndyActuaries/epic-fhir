@@ -9,21 +9,24 @@
 require(shiny)
 require(dplyr)
 require(magrittr)
+require(tidyr)
 
 source('r/load_data.r', chdir=TRUE)
 
 #' ### LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
 
 freq.name <- df.results %>%
-  group_by(name) %>% 
+  group_by(name, fhir) %>% 
   summarize(n=n()) %>% 
-  ungroup()
+  ungroup() %>% 
+  spread(fhir, n, fill=0) %>% 
+  mutate(n=Epic+INPC)
 
 choices.name <- df.patients %>% 
   inner_join(freq.name) %>% 
   mutate(
     n = ifelse(is.na(n), 0, n)
-    ,name.disp = paste0(name, ' (n=', n, ')')
+    ,name.disp = paste0(name, ' (n=', Epic, '; ', INPC, ')')
     ) %>%
   arrange(desc(n)) %>% {
     names.decorated <- .$name
@@ -32,9 +35,11 @@ choices.name <- df.patients %>%
   }
 
 freq.loinc <- df.results %>%
-  group_by(name, loinc) %>% 
+  group_by(name, loinc, fhir) %>% 
   summarize(n=n()) %>% 
-  ungroup()
+  ungroup() %>% 
+  spread(fhir, n, fill=0) %>%
+  mutate(n=Epic+INPC)
 
 
 shinyServer(function(input, output) {
@@ -73,7 +78,9 @@ shinyServer(function(input, output) {
           ,' '
           ,desc
           ,' (n='
-          ,n
+          ,Epic
+          ,'; '
+          ,INPC
           ,')'
           )
       ) %>% 
