@@ -10,7 +10,6 @@
 import csv
 import typing
 import traceback
-import re
 from collections import OrderedDict
 from pathlib import Path
 
