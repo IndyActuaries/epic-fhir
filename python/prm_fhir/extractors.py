@@ -10,6 +10,7 @@
 import csv
 import typing
 import traceback
+import re
 from collections import OrderedDict
 from pathlib import Path
 
@@ -95,6 +96,7 @@ def extract_results(
             reader_labs = csv.DictReader(csv_labs)
             for lab_record in reader_labs:
                 for patient_id in _generate_patient_fhir_ids(_client, patient_search_struct):
+                    patient_name = _get_patient_name(name_fhir, patient_id)
                     lab_search_struct = {'patient': patient_id, 'code':lab_record['loinc']}
                     search_object = fhirobs.Observation.where(lab_search_struct)
                     lab_bundle = search_object.perform(_client.server)
@@ -128,15 +130,6 @@ def extract_results(
                             continue
 
                         try:
-                            patient_name = _get_patient_name(lab.resource.subject.reference)
-                            if patient_name is None:
-                                continue
-                        except AttributeError:
-                            print("Failed, probably trying to read an Observation as an OperationOutcome.")
-                            traceback.print_exc()
-                            continue
-
-                        try:
                             date = lab.resource.effectiveDateTime.isostring
                             if date is None:
                                 continue
@@ -160,14 +153,28 @@ def extract_results(
             lab_search_struct = {'patient': patient_id}
             search_object = fhirobs.Observation.where(lab_search_struct)
             lab_bundle = search_object.perform(_client.server)
-
+            patient_name = _get_patient_name(name_fhir, patient_id)
             assert lab_bundle.entry is not None
             for entry in lab_bundle.entry:
                 _idx_loinc = None
                 for i, coding in enumerate(entry.resource.code.coding):
                     if coding.system == 'http://loinc.org':
                         _idx_loinc = i
+                        loinc = coding.code
+                        loinc_desc = coding.display
                 if _idx_loinc is None:
+                    continue
+
+                try:
+                    value = entry.resource.valueQuantity.value
+                    if value is None:
+                        continue
+                    units = entry.resource.valueQuantity.unit
+                except AttributeError:
+                    print("This entry doesn't have a valueQuantity, so we don't care")
+                    continue
+                date = entry.resource.effectiveDateTime.isostring
+                if date is None:
                     continue
 
                 yield OrderedDict([
@@ -191,18 +198,22 @@ extract_results.fieldnames = [
     'date',
     ]
 
-def _get_patient_name(patient_url):
-    result = patient_url.split('/')
-    url_fhir = "/".join(result[0:7])
-    patient_fhir_id = result[-1]
+def _get_patient_name(name_fhir, patient_id):
+    if name_fhir is 'Epic':
+        url_fhir = 'https://open-ic.epic.com/FHIR/api/FHIR/DSTU2'
+    else:
+        url_fhir = 'http://134.68.33.32/fhir/'
+
     _client = _create_fhir_client(url_fhir)
-    patient = fhirpatient.Patient.read(patient_fhir_id, _client.server)
+    patient = fhirpatient.Patient.read(patient_id, _client.server)
     for name in patient.name:
         if name is None:
             patientname = ""
         else:
             patientname = ", ".join([name.family[0], name.given[0]])
+
     return patientname
+
 
 if __name__ == "__main__":
     import os
