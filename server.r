@@ -14,6 +14,28 @@ source('r/load_data.r', chdir=TRUE)
 
 shinyServer(function(input, output) {
 
+  
+  output$ui_name <- renderUI({
+    selectInput(
+      "select_name"
+      ,label="Patient Name"
+      ,choices=df.patients$name
+      ,selected='Argonaut, Jason'
+      )
+  })
+  
+  output$ui_loinc <- renderUI({
+    loincs <- df.labs$loinc
+    names(loincs) <- paste(df.labs$loinc, df.labs$desc)
+    
+    selectInput(
+      "select_loinc"
+      ,label="LOINC Code"
+      ,choices=loincs
+      ,selected=loincs[1]
+    )
+  })
+  
   output$distPlot <- renderPlot({
     x    <- faithful[, 2]
     bins <- seq(min(x), max(x), length.out = input$bins + 1)

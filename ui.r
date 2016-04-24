@@ -12,15 +12,17 @@ require(shiny)
 
 shinyUI(fluidPage(
   
-  titlePanel("Hello Shiny!"),
+  titlePanel("Demonstrating the value of INPC"),
   
   sidebarLayout(
     sidebarPanel(
-      sliderInput("bins",
-                  "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
+      uiOutput('ui_name')
+      ,uiOutput('ui_loinc')
+      ,sliderInput("bins",
+                   "Number of bins:",
+                   min = 1,
+                   max = 50,
+                   value = 30)
     ),
     
     mainPanel(
