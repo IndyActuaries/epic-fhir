@@ -89,7 +89,7 @@ shinyServer(function(input, output) {
         names(loinc.decorated) <- .$loinc.disp
         loinc.decorated
       } %>% 
-      head(10)
+      head(7)
     
     radioButtons(
       "select_loinc"
@@ -98,13 +98,32 @@ shinyServer(function(input, output) {
       ,selected=choices.loinc[1]
     )
   })
-  
-  output$distPlot <- renderPlot({
-    x    <- faithful[, 2]
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
 
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+  output$ui_fhir <- renderUI({
+    
+    choices.fhir <- freq.loinc %>% 
+      filter(
+        name == input$select_name
+        ,loinc == input$select_loinc
+      ) %>% {
+          fhir.decor <- c('Epic', 'INPC')
+          names(fhir.decor) <- c(
+            paste0('Eskenazi (n=', .$Epic, ')')
+            ,paste0('INPC (n=', .$INPC, ')')
+          )
+        }
+    
+    checkboxGroupInput(
+      "select_fhir"
+      ,label="FHIR Source"
+      ,choices=choices.fhir
+      ,selected=choices.fhir
+    )
+  })
+  
+    
+  output$distPlot <- renderPlot({
+    hist(rnorm(50))
   })
   
   output$labsTable <- renderDataTable({

@@ -23,11 +23,7 @@ shinyUI(fluidPage(
       ,textOutput('patient_address')
       ,p()
       ,uiOutput('ui_loinc')
-      ,sliderInput("bins",
-                   "Number of bins:",
-                   min = 1,
-                   max = 50,
-                   value = 30)
+      ,uiOutput('ui_fhir')
     ),
     
     mainPanel(
