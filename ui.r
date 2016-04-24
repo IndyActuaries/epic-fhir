@@ -33,6 +33,8 @@ shinyUI(fluidPage(
           'Model Params'
           ,numericInput("scale_input", label = h3("CTS Scale"), value = 1)
           ,numericInput("order_input", label = h3("CTS Order"), value = 1)
+          ,numericInput("maxlim_input", label = h3("Limit - Max"), value = 1000)
+          ,numericInput("minlim_input", label = h3("Limit - Min"), value = 0)
         )
       )
     ),

@@ -43,6 +43,8 @@ fit_cts <- function(
   ,fhirs
   ,cts.scale
   ,cts.order
+  ,result.limit.max
+  ,result.limit.min
   ) {
 
   # patient <- "Argonaut, jessica"
@@ -54,6 +56,8 @@ fit_cts <- function(
       name == patient
       ,loinc == code
       ,fhir %in% fhirs
+      ,result <= result.limit.max
+      ,result >= result.limit.min
       )
   
   data.model <- data.patient %>% 

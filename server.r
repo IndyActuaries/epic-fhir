@@ -133,6 +133,8 @@ shinyServer(function(input, output) {
       ,input$select_fhir
       ,input$scale_input
       ,input$order_input
+      ,input$maxlim_input
+      ,input$minlim_input
     )
   })
   
