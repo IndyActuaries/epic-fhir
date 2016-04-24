@@ -98,6 +98,9 @@ def extract_results(
                 search_object = fhirobs.Observation.where(lab_search_struct)
                 lab_bundle = search_object.perform(_client.server)
 
+                if lab_bundle.entry is None:
+                    continue
+
                 for lab in lab_bundle.entry:
                     try:
                         for code in lab.resource.code.coding:
