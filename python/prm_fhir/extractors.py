@@ -10,6 +10,8 @@
 import csv
 import typing
 import traceback
+import functools
+from time import sleep
 from collections import OrderedDict
 from pathlib import Path
 
@@ -62,8 +64,7 @@ def extract_patients(
         if patient.address is None:
             address = ""
         else:
-            for ad in patient.address:
-                address = ad.city
+            address = _format_address(patient.address[0])
 
         yield OrderedDict([
             ('name', patientname),
@@ -95,6 +96,7 @@ def extract_results(
             reader_labs = csv.DictReader(csv_labs)
             for lab_record in reader_labs:
                 for patient_id in _generate_patient_fhir_ids(_client, patient_search_struct):
+                    sleep(12)
                     patient_name = _get_patient_name(name_fhir, patient_id)
                     lab_search_struct = {'patient': patient_id, 'code':lab_record['loinc']}
                     search_object = fhirobs.Observation.where(lab_search_struct)
@@ -149,6 +151,7 @@ def extract_results(
 
     if name_fhir == 'INPC':
         for patient_id in _generate_patient_fhir_ids(_client, patient_search_struct):
+            #sleep(.5)
             lab_search_struct = {'patient': patient_id}
             search_object = fhirobs.Observation.where(lab_search_struct)
             lab_bundle = search_object.perform(_client.server)
@@ -197,12 +200,14 @@ extract_results.fieldnames = [
     'date',
     ]
 
+@functools.lru_cache(maxsize=512)
 def _get_patient_name(name_fhir, patient_id):
     if name_fhir is 'Epic':
         url_fhir = 'https://open-ic.epic.com/FHIR/api/FHIR/DSTU2'
     else:
         url_fhir = 'http://134.68.33.32/fhir/'
 
+    sleep(5)
     _client = _create_fhir_client(url_fhir)
     patient = fhirpatient.Patient.read(patient_id, _client.server)
     for name in patient.name:
@@ -212,6 +217,14 @@ def _get_patient_name(name_fhir, patient_id):
             patientname = ", ".join([name.family[0], name.given[0]])
 
     return patientname
+
+
+def _format_address(address_resource):
+    return "{city} {state} {zip}".format(
+        city=address_resource.city,
+        state=address_resource.state,
+        zip=address_resource.postalCode,
+    )
 
 
 if __name__ == "__main__":

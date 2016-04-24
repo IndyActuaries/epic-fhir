@@ -12,6 +12,7 @@
   <none>
 """
 import csv
+from time import sleep
 from pathlib import Path
 import prm_fhir.extractors
 
@@ -52,6 +53,7 @@ if __name__ == "__main__":
             )
         WRITER.writeheader()
         for args in ARGS_PATIENTS:
+            sleep(.1)
             WRITER.writerows(
                 prm_fhir.extractors.extract_patients(**args)
                 )
