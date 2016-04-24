@@ -1,4 +1,4 @@
-#' ### CODE OWNERS: Shea Parkes
+#' ### CODE OWNERS: Shea Parkes, Kyle Baird
 #'
 #' ### OBJECTIVE:
 #'   * Server side code of Epic FHIR Shiny App.
@@ -12,6 +12,7 @@ require(magrittr)
 require(tidyr)
 
 source('r/load_data.r', chdir=TRUE)
+source('r/models.r', chdir=TRUE)
 
 #' ### LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
 
@@ -111,6 +112,7 @@ shinyServer(function(input, output) {
             paste0('Eskenazi (n=', .$Epic, ')')
             ,paste0('INPC (n=', .$INPC, ')')
           )
+          fhir.decor
         }
     
     checkboxGroupInput(
@@ -126,13 +128,24 @@ shinyServer(function(input, output) {
     hist(rnorm(50))
   })
   
+  output$trace_fhir <- renderPrint({ input$select_fhir })
+  
   output$labsTable <- renderDataTable({
-    df.results %>% 
-      filter(
-        input$select_name == name
-        ,input$select_loinc == loinc
-      ) %>% 
-      arrange(date.r)
+    fit_cts(
+      input$select_name
+      ,input$select_loinc
+      ,input$select_fhir
+      ,input$scale_input
+      ,input$order_input
+    ) %>%
+      dplyr::select(
+        FHIR_Source=fhir
+        ,Date_Time=date.r
+        ,Result=result
+        ,Units=result_units
+        ,sser
+        ,svar
+      )
   })
   
 })

@@ -1,4 +1,4 @@
-#' ### CODE OWNERS: Shea Parkes
+#' ### CODE OWNERS: Shea Parkes, Kyle Baird
 #' 
 #' ### OBJECTIVE:
 #'   * UI side of Epic FHIR Shiny App.
@@ -16,14 +16,25 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      uiOutput('ui_name')
-      ,p()
-      ,h4('Patient Info')
-      ,textOutput('patient_dob')
-      ,textOutput('patient_address')
-      ,p()
-      ,uiOutput('ui_loinc')
-      ,uiOutput('ui_fhir')
+      tabsetPanel(
+        tabPanel(
+          'FHIR Data'
+          ,uiOutput('ui_name')
+          ,p()
+          ,h4('Patient Info')
+          ,textOutput('patient_dob')
+          ,textOutput('patient_address')
+          ,p()
+          ,uiOutput('ui_loinc')
+          ,uiOutput('ui_fhir')
+          #,verbatimTextOutput("trace_fhir")
+        )
+        ,tabPanel(
+          'Model Params'
+          ,numericInput("scale_input", label = h3("CTS Scale"), value = 1)
+          ,numericInput("order_input", label = h3("CTS Order"), value = 1)
+        )
+      )
     ),
     
     mainPanel(

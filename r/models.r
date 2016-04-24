@@ -41,13 +41,20 @@ fit_cts <- function(
   patient
   ,code
   ,fhirs
+  ,cts.scale
+  ,cts.order
   ) {
 
   # patient <- "Argonaut, jessica"
   # code <- "8480-6"
+  # fhirs <- c('Epic', 'INPC')
   
   data.patient <- df.results %>% 
-    filter(name == patient, loinc == code)
+    filter(
+      name == patient
+      ,loinc == code
+      ,fhir %in% fhirs
+      )
   
   data.model <- data.patient %>% 
     group_by(date.r) %>% 
@@ -70,17 +77,17 @@ fit_cts <- function(
   
   scale.hint <- 2 * pi / mean(diff(data.model$date.float))
 
-  ts.model <- car(
+  suppressWarnings(ts.model <- car(
     data.model$date.float
     ,data.model$result
-    ,scale = scale.hint
-    ,order = 1
+    ,scale = cts.scale
+    ,order = cts.order
     ,ctrl = car_control(
       trace = TRUE
       # ,vri = TRUE
       # ,ccv = "MNCT"
       )
-    )
+    ))
 
   model.munge <- data.frame(
     date.r = data.model$date.r
@@ -92,6 +99,7 @@ fit_cts <- function(
     select_(
       "date.r"
       ,"result"
+      ,"result_units"
       ,"fhir"
       ) %>% 
     left_join(model.munge, by = "date.r")
