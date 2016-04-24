@@ -143,6 +143,12 @@ def extract_results(
                         ('date', date)
                     ])
 
+extract_results.fieldnames = [
+    'name',
+    'loinc',
+    'fhir',
+    'result',
+    ]
 
 def _get_patient_name(patient_url):
     result = patient_url.split('/')

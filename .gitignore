@@ -63,3 +63,9 @@ target/
 
 #pycharm
 .idea
+
+# ~R
+.rhistory
+
+# ShinyApps
+*.dcf
