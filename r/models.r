@@ -81,23 +81,35 @@ fit_cts <- function(
   
   scale.hint <- 2 * pi / mean(diff(data.model$date.float))
 
-  suppressWarnings(ts.model <- car(
-    data.model$date.float
-    ,data.model$result
-    ,scale = cts.scale
-    ,order = cts.order
-    ,ctrl = car_control(
-      trace = TRUE
-      # ,vri = TRUE
-      # ,ccv = "MNCT"
+  tryCatch(
+    {
+      model.munge <- data.frame(
+        date.r=data.model$date.r
+        ,sser=0
+        ,svar=0
       )
-    ))
+      suppressWarnings(ts.model <- car(
+        data.model$date.float
+        ,data.model$result
+        ,scale = cts.scale
+        ,order = cts.order
+        ,ctrl = car_control(
+          trace = TRUE
+          # ,vri = TRUE
+          # ,ccv = "MNCT"
+          )
+        ))
+      model.munge <- data.frame(
+        date.r = data.model$date.r
+        ,sser = ts.model$sser
+        ,svar = ts.model$svar
+      )
+    }
+    ,error=function(e){print('Caught error')}
+    
+  )
 
-  model.munge <- data.frame(
-    date.r = data.model$date.r
-    ,sser = ts.model$sser
-    ,svar = ts.model$svar
-    )
+  
 
   data.return <- data.patient %>%
     select_(
