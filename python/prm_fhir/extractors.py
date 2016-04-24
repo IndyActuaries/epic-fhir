@@ -9,6 +9,7 @@
 """
 import csv
 import typing
+import traceback
 from collections import OrderedDict
 from pathlib import Path
 
@@ -97,15 +98,56 @@ def extract_results(
                 search_object = fhirobs.Observation.where(lab_search_struct)
                 lab_bundle = search_object.perform(_client.server)
 
+                if lab_bundle.entry is None:
+                    continue
+
                 for lab in lab_bundle.entry:
-                    for code in lab.resource.code.coding:
-                        loinc = code.code
+                    try:
+                        for code in lab.resource.code.coding:
+                            if code is None:
+                                continue
+                            else:
+                                loinc = code.code
+                    except AttributeError:
+                        print("Failed, probably trying to read an Observation as an OperationOutcome.")
+                        traceback.print_exc()
+                        continue
+
+
+
+                    try:
+                        value = lab.resource.valueQuantity.value
+                        if value is None:
+                            continue
+                    except AttributeError:
+                        print("Failed, probably trying to read an Observation as an OperationOutcome.")
+                        traceback.print_exc()
+                        continue
+
+                    try:
+                        patient_name = _get_patient_name(lab.resource.subject.reference)
+                        if patient_name is None:
+                            continue
+                    except AttributeError:
+                        print("Failed, probably trying to read an Observation as an OperationOutcome.")
+                        traceback.print_exc()
+                        continue
+
+                    try:
+                        date = lab.resource.effectiveDateTime.isostring
+                        if date is None:
+                            continue
+                    except AttributeError:
+                        print("Failed, probably trying to read an Observation as an OperationOutcome.")
+                        traceback.print_exc()
+                        continue
 
                     yield OrderedDict([
-                        ('name', _get_patient_name(lab.resource.subject.reference)),
+                        ('name', patient_name),
                         ('loinc', loinc),
                         ('fhir', name_fhir),
-                        ('result', lab.resource.valueQuantity.value),
+                        ('result', value),
+                        ('date', date)
                     ])
 
 extract_results.fieldnames = [
@@ -113,6 +155,7 @@ extract_results.fieldnames = [
     'loinc',
     'fhir',
     'result',
+    'date',
     ]
 
 def _get_patient_name(patient_url):
@@ -122,7 +165,10 @@ def _get_patient_name(patient_url):
     _client = _create_fhir_client(url_fhir)
     patient = fhirpatient.Patient.read(patient_fhir_id, _client.server)
     for name in patient.name:
-        patientname = ", ".join([name.family[0], name.given[0]])
+        if name is None:
+            patientname = ""
+        else:
+            patientname = ", ".join([name.family[0], name.given[0]])
     return patientname
 
 if __name__ == "__main__":
