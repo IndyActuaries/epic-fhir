@@ -17,11 +17,12 @@ df.labs <- read.csv(
   ,header = TRUE
   ,stringsAsFactors = FALSE
   )
-# df.results <- read.csv(
-#   paste0(path.dir.source, "results.csv")
-#   ,header = TRUE
-#   ,stringsAsFactors = FALSE
-#   )
+df.results <- read.csv(
+  paste0(path.dir.source, "results.csv")
+  ,header = TRUE
+  ,stringsAsFactors = FALSE
+  )
+df.results$date.r <- strptime(df.results$date, "%Y-%m-%dT%H:%M:%SZ")
 df.patients <- read.csv(
   paste0(path.dir.source, "patients.csv")
   ,header = TRUE
