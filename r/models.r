@@ -70,7 +70,7 @@ fit_cts <- function(
   
   scale.hint <- 2 * pi / mean(diff(data.model$date.float))
 
-  ts.model <- car(
+  suppressWarnings(ts.model <- car(
     data.model$date.float
     ,data.model$result
     ,scale = scale.hint
@@ -80,7 +80,7 @@ fit_cts <- function(
       # ,vri = TRUE
       # ,ccv = "MNCT"
       )
-    )
+    ))
 
   model.munge <- data.frame(
     date.r = data.model$date.r
@@ -92,6 +92,7 @@ fit_cts <- function(
     select_(
       "date.r"
       ,"result"
+      ,"result_units"
       ,"fhir"
       ) %>% 
     left_join(model.munge, by = "date.r")

@@ -12,6 +12,7 @@ require(magrittr)
 require(tidyr)
 
 source('r/load_data.r', chdir=TRUE)
+source('r/models.r', chdir=TRUE)
 
 #' ### LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
 
@@ -127,12 +128,17 @@ shinyServer(function(input, output) {
   })
   
   output$labsTable <- renderDataTable({
-    df.results %>% 
-      filter(
-        input$select_name == name
-        ,input$select_loinc == loinc
-      ) %>% 
-      arrange(date.r)
+    fit_cts(
+      input$select_name
+      ,input$select_loinc
+      ,input$select_fhir
+    ) %>% 
+      dplyr::select(
+        FHIR_Source=fhir
+        ,Date_Time=date.r
+        ,Result=result
+        ,Units=result_units
+      )
   })
   
 })
