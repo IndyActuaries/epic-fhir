@@ -9,21 +9,24 @@
 require(shiny)
 require(dplyr)
 require(magrittr)
+require(tidyr)
 
 source('r/load_data.r', chdir=TRUE)
 
 #' ### LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
 
 freq.name <- df.results %>%
-  group_by(name) %>% 
+  group_by(name, fhir) %>% 
   summarize(n=n()) %>% 
-  ungroup()
+  ungroup() %>% 
+  spread(fhir, n, fill=0) %>% 
+  mutate(n=Epic+INPC)
 
 choices.name <- df.patients %>% 
   inner_join(freq.name) %>% 
   mutate(
     n = ifelse(is.na(n), 0, n)
-    ,name.disp = paste0(name, ' (n=', n, ')')
+    ,name.disp = paste0(name, ' (n=', Epic, '; ', INPC, ')')
     ) %>%
   arrange(desc(n)) %>% {
     names.decorated <- .$name
@@ -31,10 +34,18 @@ choices.name <- df.patients %>%
     names.decorated
   }
 
+freq.loinc <- df.results %>%
+  group_by(name, loinc, fhir) %>% 
+  summarize(n=n()) %>% 
+  ungroup() %>% 
+  spread(fhir, n, fill=0) %>%
+  mutate(n=Epic+INPC)
+
+
 shinyServer(function(input, output) {
 
   output$ui_name <- renderUI({
-    selectInput(
+    radioButtons(
       "select_name"
       ,label="Patient Name"
       ,choices=choices.name
@@ -45,14 +56,14 @@ shinyServer(function(input, output) {
   output$patient_dob <- renderText({
     df.patients %>%
       filter(name == input$select_name) %>% {
-        as.character(.$dob.r)
+        paste('DOB:', as.character(.$dob.r))
       }
   })
   
   output$patient_address <- renderText({
     df.patients %>%
       filter(name == input$select_name) %>% {
-        ifelse(.$address=='','Unknown',.$address)
+        paste('Address:', ifelse(.$address=='','Unknown',.$address))
       }
   })
   
@@ -67,31 +78,61 @@ shinyServer(function(input, output) {
           ,' '
           ,desc
           ,' (n='
-          ,n
+          ,Epic
+          ,'; '
+          ,INPC
           ,')'
           )
-      ) %>% {
+      ) %>% 
+      arrange(desc(n)) %>% {
         loinc.decorated <- .$loinc
         names(loinc.decorated) <- .$loinc.disp
         loinc.decorated
-      }
+      } %>% 
+      head(7)
     
-    selectInput(
+    radioButtons(
       "select_loinc"
       ,label="LOINC Code"
       ,choices=choices.loinc
-      ,selected=choices.loinc
+      ,selected=choices.loinc[1]
+    )
+  })
+
+  output$ui_fhir <- renderUI({
+    
+    choices.fhir <- freq.loinc %>% 
+      filter(
+        name == input$select_name
+        ,loinc == input$select_loinc
+      ) %>% {
+          fhir.decor <- c('Epic', 'INPC')
+          names(fhir.decor) <- c(
+            paste0('Eskenazi (n=', .$Epic, ')')
+            ,paste0('INPC (n=', .$INPC, ')')
+          )
+        }
+    
+    checkboxGroupInput(
+      "select_fhir"
+      ,label="FHIR Source"
+      ,choices=choices.fhir
+      ,selected=choices.fhir
     )
   })
   
+    
   output$distPlot <- renderPlot({
-    x    <- faithful[, 2]
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    hist(rnorm(50))
   })
   
-  output$labsTable <- renderDataTable(df.labs)
+  output$labsTable <- renderDataTable({
+    df.results %>% 
+      filter(
+        input$select_name == name
+        ,input$select_loinc == loinc
+      ) %>% 
+      arrange(date.r)
+  })
   
 })
