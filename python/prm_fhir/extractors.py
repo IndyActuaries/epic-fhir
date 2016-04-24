@@ -10,6 +10,7 @@
 import csv
 import typing
 import traceback
+import functools
 from time import sleep
 from collections import OrderedDict
 from pathlib import Path
@@ -95,7 +96,7 @@ def extract_results(
             reader_labs = csv.DictReader(csv_labs)
             for lab_record in reader_labs:
                 for patient_id in _generate_patient_fhir_ids(_client, patient_search_struct):
-                    sleep(1)
+                    sleep(12)
                     patient_name = _get_patient_name(name_fhir, patient_id)
                     lab_search_struct = {'patient': patient_id, 'code':lab_record['loinc']}
                     search_object = fhirobs.Observation.where(lab_search_struct)
@@ -107,7 +108,6 @@ def extract_results(
                     for lab in lab_bundle.entry:
                         try:
                             for code in lab.resource.code.coding:
-                                sleep(.5)
                                 if code is None:
                                     continue
                                 else:
@@ -200,6 +200,7 @@ extract_results.fieldnames = [
     'date',
     ]
 
+@functools.lru_cache(maxsize=512)
 def _get_patient_name(name_fhir, patient_id):
     if name_fhir is 'Epic':
         url_fhir = 'https://open-ic.epic.com/FHIR/api/FHIR/DSTU2'
