@@ -39,7 +39,7 @@ shinyUI(fluidPage(
     
     mainPanel(
       tabsetPanel(
-       tabPanel('OldFaith', plotOutput("distPlot"))
+       tabPanel('Plot', plotOutput("labsPlot"))
        ,tabPanel('Data Table', dataTableOutput("labsTable"))
       )
     )
