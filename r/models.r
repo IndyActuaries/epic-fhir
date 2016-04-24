@@ -37,45 +37,69 @@ df.results %>%
   #head(30) %>% 
   #as.data.frame()
 
-data.model <- df.results %>% 
-  filter(name == "Argonaut, jessica", loinc == "8480-6") %>% 
-  group_by(name, loinc, date.r) %>% 
-  summarize(result = mean(result)) %>% 
-  mutate(
-    date.float = as.double(date.r) / 60 / 60 / 24
-    ) %>% 
-  arrange(date.r)
+fit_cts <- function(
+  patient
+  ,code
+  ,fhirs
+  ) {
 
-basic_line_plot <- data.model %>%
-  #filter(name == "Ragsdale, Bacon") %>% 
-  ggplot(
-    aes(x = date.r, y = result)
-  ) +
-  geom_line()
-basic_line_plot
+  # patient <- "Argonaut, jessica"
+  # code <- "8480-6"
+  
+  data.patient <- df.results %>% 
+    filter(name == patient, loinc == code)
+  
+  data.model <- data.patient %>% 
+    group_by(date.r) %>% 
+    summarize(result = mean(result)) %>% 
+    mutate(
+      date.float = as.double(date.r) / 60 / 60 / 24
+      ) %>% 
+    arrange(date.r)
+  
+  # basic_line_plot <- data.model %>%
+  #   ggplot(
+  #     aes(x = date.r, y = result)
+  #   ) +
+  #   geom_line()
+  # basic_line_plot
 
-#################
-### Model Fit ###
-#################
+  #################
+  ### Model Fit ###
+  #################
+  
+  scale.hint <- 2 * pi / mean(diff(data.model$date.float))
 
-scale.hint <- 2 * pi / mean(diff(data.model$date.float))
-scale.hint
-
-ts.model <- car(
-  data.model$date.float
-  ,data.model$result
-  ,scale = scale.hint
-  ,order = 1
-  ,ctrl = car_control(
-    trace = TRUE
-    #,ccv = "MNCT"
+  ts.model <- car(
+    data.model$date.float
+    ,data.model$result
+    ,scale = scale.hint
+    ,order = 1
+    ,ctrl = car_control(
+      trace = TRUE
+      # ,vri = TRUE
+      # ,ccv = "MNCT"
+      )
     )
-  )
-ts.model
-summary(ts.model)
-tsdiag(ts.model)
 
-#needs to return - real date, results, fhir (source), mean (retrospective), stderr (mean)
+  model.munge <- data.frame(
+    date.r = data.model$date.r
+    ,sser = ts.model$sser
+    ,svar = ts.model$svar
+    )
+
+  data.return <- data.patient %>%
+    select_(
+      "date.r"
+      ,"result"
+      ,"fhir"
+      ) %>% 
+    left_join(model.munge, by = "date.r")
+  
+  return(data.return)
+  }
+# test <- fit_cts("Argonaut, jessica", "8480-6")
+
 
 #'
 #' _ _ _
