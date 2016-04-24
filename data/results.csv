@@ -8,6 +8,40 @@ name,loinc,loinc_desc,fhir,result,result_units,date
 "Argonaut, Jason",4548-4,Hemoglobin A1c/Hemoglobin.total in Blood,Epic,7.5,%,2016-01-28T23:12:00Z
 "Argonaut, Jason",4548-4,Hemoglobin A1c/Hemoglobin.total in Blood,Epic,3.0,%,2016-01-21T06:00:00Z
 "Argonaut, Jason",4548-4,Hemoglobin A1c/Hemoglobin.total in Blood,Epic,2.0,%,2016-01-21T06:00:00Z
+"Argonaut, Jason",8480-6,Systolic blood pressure,Epic,122.0,mm[Hg],2016-04-19T15:02:00Z
+"Argonaut, Jason",8480-6,Systolic blood pressure,Epic,120.0,mm[Hg],2015-08-26T22:00:00Z
+"Argonaut, Jason",8480-6,Systolic blood pressure,Epic,120.0,mm[Hg],2015-08-25T22:46:00Z
+"Argonaut, Jessica",8480-6,Systolic blood pressure,Epic,120.0,mm[Hg],2015-10-03T16:00:00Z
+"Argonaut, Jason",8462-4,Diastolic blood pressure,Epic,80.0,mm[Hg],2016-04-19T15:02:00Z
+"Argonaut, Jason",8462-4,Diastolic blood pressure,Epic,72.0,mm[Hg],2015-08-26T22:00:00Z
+"Argonaut, Jason",8462-4,Diastolic blood pressure,Epic,70.0,mm[Hg],2015-08-25T22:46:00Z
+"Argonaut, Jessica",8462-4,Diastolic blood pressure,Epic,55.0,mm[Hg],2015-10-03T16:00:00Z
+"Argonaut, Jason",8867-4,Heart rate,Epic,71.0,/min,2016-04-19T15:02:00Z
+"Argonaut, Jason",8867-4,Heart rate,Epic,55.0,/min,2015-08-26T22:00:00Z
+"Argonaut, Jason",8867-4,Heart rate,Epic,70.0,/min,2015-08-25T22:46:00Z
+"Argonaut, Jessica",8867-4,Heart rate,Epic,56.0,/min,2015-10-03T16:00:00Z
+"Argonaut, Jessica",8867-4,Heart rate,Epic,55.0,/min,2015-10-03T16:00:00Z
+"Argonaut, Jason",9279-1,Respiratory rate,Epic,15.0,/min,2015-08-26T22:00:00Z
+"Argonaut, Jason",9279-1,Respiratory rate,Epic,20.0,/min,2015-08-25T22:46:00Z
+"Argonaut, Jason",718-7,Hemoglobin [Mass/volume] in Blood,Epic,13.0,g/dL,2015-10-03T20:21:00Z
+"Argonaut, Jason",718-7,Hemoglobin [Mass/volume] in Blood,Epic,16.0,g/dL,2015-10-03T20:20:00Z
+"Argonaut, Jessica",718-7,Hemoglobin [Mass/volume] in Blood,Epic,14.0,g/dL,2015-12-31T18:00:00Z
+"Argonaut, Jason",2823-3,Potassium [Moles/volume] in Serum or Plasma,Epic,3.7,mmol/L,2016-02-06T18:00:00Z
+"Argonaut, Jessica",2823-3,Potassium [Moles/volume] in Serum or Plasma,Epic,3.8,mmol/L,2016-01-09T20:50:00Z
+"Argonaut, Jason",789-8,Erythrocytes [#/volume] in Blood by Automated count,Epic,4.2,10*6/µL,2015-10-03T20:21:00Z
+"Argonaut, Jason",789-8,Erythrocytes [#/volume] in Blood by Automated count,Epic,4.0,10*6/µL,2015-10-03T20:20:00Z
+"Argonaut, Jason",789-8,Erythrocytes [#/volume] in Blood by Automated count,Epic,4.8,10*6/µL,2016-02-06T18:00:00Z
+"Argonaut, Jessica",789-8,Erythrocytes [#/volume] in Blood by Automated count,Epic,5.0,10*6/µL,2015-12-31T18:00:00Z
+"Argonaut, Jason",2028-9,"Carbon dioxide, total [Moles/volume] in Serum or Plasma",Epic,17.0,mmol/L,2016-02-06T18:00:00Z
+"Argonaut, Jessica",2028-9,"Carbon dioxide, total [Moles/volume] in Serum or Plasma",Epic,14.0,mmol/L,2016-01-09T20:50:00Z
+"Argonaut, Jason",2951-2,Sodium [Moles/volume] in Serum or Plasma,Epic,140.0,mmol/L,2016-02-06T18:00:00Z
+"Argonaut, Jessica",2951-2,Sodium [Moles/volume] in Serum or Plasma,Epic,145.0,mmol/L,2016-01-09T20:50:00Z
+"Argonaut, Jason",785-6,Erythrocyte mean corpuscular hemoglobin [Entitic mass] by Automated count,Epic,31.0,pg,2016-02-06T18:00:00Z
+"Argonaut, Jessica",785-6,Erythrocyte mean corpuscular hemoglobin [Entitic mass] by Automated count,Epic,29.0,pg,2015-12-31T18:00:00Z
+"Argonaut, Jason",786-4,Erythrocyte mean corpuscular hemoglobin concentration [Mass/volume] by Automated count,Epic,32.0,g/dL,2016-02-06T18:00:00Z
+"Argonaut, Jessica",786-4,Erythrocyte mean corpuscular hemoglobin concentration [Mass/volume] by Automated count,Epic,34.0,g/dL,2015-12-31T18:00:00Z
+"Argonaut, Jason",2075-0,Chloride [Moles/volume] in Serum or Plasma,Epic,101.0,mmol/L,2016-02-06T18:00:00Z
+"Argonaut, Jessica",2075-0,Chloride [Moles/volume] in Serum or Plasma,Epic,105.0,mmol/L,2016-01-09T20:50:00Z
 "Ragsdale, Parfait",8310-5,Body temperature,Epic,36.5,Cel,2015-03-20T14:54:00Z
 "Ragsdale, Parfait",8310-5,Body temperature,Epic,37.0,Cel,2014-09-21T14:50:00Z
 "Ragsdale, Parfait",8310-5,Body temperature,Epic,36.5,Cel,2014-03-25T14:47:00Z
