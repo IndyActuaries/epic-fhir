@@ -81,7 +81,8 @@ shinyServer(function(input, output) {
         loinc.decorated <- .$loinc
         names(loinc.decorated) <- .$loinc.disp
         loinc.decorated
-      }
+      } %>% 
+      head(10)
     
     radioButtons(
       "select_loinc"
