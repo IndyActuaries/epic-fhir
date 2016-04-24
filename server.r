@@ -31,10 +31,16 @@ choices.name <- df.patients %>%
     names.decorated
   }
 
+freq.loinc <- df.results %>%
+  group_by(name, loinc) %>% 
+  summarize(n=n()) %>% 
+  ungroup()
+
+
 shinyServer(function(input, output) {
 
   output$ui_name <- renderUI({
-    selectInput(
+    radioButtons(
       "select_name"
       ,label="Patient Name"
       ,choices=choices.name
@@ -70,17 +76,18 @@ shinyServer(function(input, output) {
           ,n
           ,')'
           )
-      ) %>% {
+      ) %>% 
+      arrange(desc(n)) %>% {
         loinc.decorated <- .$loinc
         names(loinc.decorated) <- .$loinc.disp
         loinc.decorated
       }
     
-    selectInput(
+    radioButtons(
       "select_loinc"
       ,label="LOINC Code"
       ,choices=choices.loinc
-      ,selected=choices.loinc
+      ,selected=choices.loinc[1]
     )
   })
   
