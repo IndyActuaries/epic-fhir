@@ -63,7 +63,6 @@ def extract_patients(
         if patient.address is None:
             address = ""
         else:
-            address = _format_address(patient.address)
 
         yield OrderedDict([
             ('name', patientname),
