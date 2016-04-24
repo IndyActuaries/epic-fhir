@@ -121,6 +121,7 @@ def extract_results(
                             value = lab.resource.valueQuantity.value
                             if value is None:
                                 continue
+                            units = lab.resource.valueQuantity.unit
                         except AttributeError:
                             print("Failed, probably trying to read an Observation as an OperationOutcome.")
                             traceback.print_exc()
@@ -150,6 +151,7 @@ def extract_results(
                             ('loinc_desc', loinc_desc),
                             ('fhir', name_fhir),
                             ('result', value),
+                            ('result_units', units),
                             ('date', date)
                         ])
 
@@ -174,6 +176,7 @@ def extract_results(
                     ('loinc_desc', loinc_desc),
                     ('fhir', name_fhir),
                     ('result', value),
+                    ('result_units', units),
                     ('date', date)
                 ])
 
@@ -184,6 +187,7 @@ extract_results.fieldnames = [
     'loinc_desc',
     'fhir',
     'result',
+    'result_units',
     'date',
     ]
 
