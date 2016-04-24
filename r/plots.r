@@ -28,8 +28,8 @@ plot_results <- function(
     ggplot(
       aes(x = date.r, y = result)
       ) +
-      geom_line() +
-      geom_point(aes(shape = fhir, color = fhir)) +
+      geom_line(alpha=0.5) +
+      geom_point(aes(shape = fhir, color = fhir),size=4.2) +
       theme_bw() +
       ggtitle("Patient Result History") +
       scale_y_continuous(
