@@ -41,6 +41,8 @@ fit_cts <- function(
   patient
   ,code
   ,fhirs
+  ,cts.scale
+  ,cts.order
   ) {
 
   # patient <- "Argonaut, jessica"
@@ -78,8 +80,8 @@ fit_cts <- function(
   suppressWarnings(ts.model <- car(
     data.model$date.float
     ,data.model$result
-    ,scale = scale.hint
-    ,order = 1
+    ,scale = cts.scale
+    ,order = cts.order
     ,ctrl = car_control(
       trace = TRUE
       # ,vri = TRUE

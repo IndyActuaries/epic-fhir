@@ -135,12 +135,16 @@ shinyServer(function(input, output) {
       input$select_name
       ,input$select_loinc
       ,input$select_fhir
+      ,input$scale_input
+      ,input$order_input
     ) %>%
       dplyr::select(
         FHIR_Source=fhir
         ,Date_Time=date.r
         ,Result=result
         ,Units=result_units
+        ,sser
+        ,svar
       )
   })
   
