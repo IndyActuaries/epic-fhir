@@ -1,4 +1,4 @@
-#' ## Code Owners: Kyle Baird
+#' ## Code Owners: Kyle Baird, Shea Parkes
 #' ### OWNERS ATTEST TO THE FOLLOWING:
 #'   * The `master` branch will meet Milliman QRM standards at all times.
 #'   * Deliveries will only be made from code in the `master` branch.
