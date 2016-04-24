@@ -51,14 +51,14 @@ shinyServer(function(input, output) {
   output$patient_dob <- renderText({
     df.patients %>%
       filter(name == input$select_name) %>% {
-        as.character(.$dob.r)
+        paste('DOB:', as.character(.$dob.r))
       }
   })
   
   output$patient_address <- renderText({
     df.patients %>%
       filter(name == input$select_name) %>% {
-        ifelse(.$address=='','Unknown',.$address)
+        paste('Address:', ifelse(.$address=='','Unknown',.$address))
       }
   })
   
@@ -99,6 +99,13 @@ shinyServer(function(input, output) {
     hist(x, breaks = bins, col = 'darkgray', border = 'white')
   })
   
-  output$labsTable <- renderDataTable(df.labs)
+  output$labsTable <- renderDataTable({
+    df.results %>% 
+      filter(
+        input$select_name == name
+        ,input$select_loinc == loinc
+      ) %>% 
+      arrange(date.r)
+  })
   
 })

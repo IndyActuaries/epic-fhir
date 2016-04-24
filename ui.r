@@ -17,10 +17,11 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       uiOutput('ui_name')
-      ,h4('Patient DOB')
+      ,p()
+      ,h4('Patient Info')
       ,textOutput('patient_dob')
-      ,h4('Patient Address')
       ,textOutput('patient_address')
+      ,p()
       ,uiOutput('ui_loinc')
       ,sliderInput("bins",
                    "Number of bins:",
@@ -32,7 +33,7 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
        tabPanel('OldFaith', plotOutput("distPlot"))
-       ,tabPanel('Labs', dataTableOutput("labsTable"))
+       ,tabPanel('Data Table', dataTableOutput("labsTable"))
       )
     )
   )
