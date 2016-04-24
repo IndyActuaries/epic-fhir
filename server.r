@@ -42,6 +42,20 @@ shinyServer(function(input, output) {
       )
   })
   
+  output$patient_dob <- renderText({
+    df.patients %>%
+      filter(name == input$select_name) %>% {
+        as.character(.$dob.r)
+      }
+  })
+  
+  output$patient_address <- renderText({
+    df.patients %>%
+      filter(name == input$select_name) %>% {
+        ifelse(.$address=='','Unknown',.$address)
+      }
+  })
+  
   output$ui_loinc <- renderUI({
     
     choices.loinc <- freq.loinc %>% 

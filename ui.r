@@ -17,6 +17,10 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       uiOutput('ui_name')
+      ,h4('Patient DOB')
+      ,textOutput('patient_dob')
+      ,h4('Patient Address')
+      ,textOutput('patient_address')
       ,uiOutput('ui_loinc')
       ,sliderInput("bins",
                    "Number of bins:",
