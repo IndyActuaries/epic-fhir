@@ -8,7 +8,7 @@
 
 require(shiny)
 
-source('R/load_data.R', chdir=TRUE)
+source('r/load_data.r', chdir=TRUE)
 
 #' ### LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
 
