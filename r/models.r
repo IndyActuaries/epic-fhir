@@ -45,9 +45,14 @@ fit_cts <- function(
 
   # patient <- "Argonaut, jessica"
   # code <- "8480-6"
+  # fhirs <- c('Epic', 'INPC')
   
   data.patient <- df.results %>% 
-    filter(name == patient, loinc == code)
+    filter(
+      name == patient
+      ,loinc == code
+      ,fhir %in% fhirs
+      )
   
   data.model <- data.patient %>% 
     group_by(date.r) %>% 

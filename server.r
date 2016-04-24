@@ -112,6 +112,7 @@ shinyServer(function(input, output) {
             paste0('Eskenazi (n=', .$Epic, ')')
             ,paste0('INPC (n=', .$INPC, ')')
           )
+          fhir.decor
         }
     
     checkboxGroupInput(
@@ -127,12 +128,14 @@ shinyServer(function(input, output) {
     hist(rnorm(50))
   })
   
+  output$trace_fhir <- renderPrint({ input$select_fhir })
+  
   output$labsTable <- renderDataTable({
     fit_cts(
       input$select_name
       ,input$select_loinc
       ,input$select_fhir
-    ) %>% 
+    ) %>%
       dplyr::select(
         FHIR_Source=fhir
         ,Date_Time=date.r

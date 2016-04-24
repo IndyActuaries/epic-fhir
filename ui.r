@@ -24,6 +24,7 @@ shinyUI(fluidPage(
       ,p()
       ,uiOutput('ui_loinc')
       ,uiOutput('ui_fhir')
+      #,verbatimTextOutput("trace_fhir")
     ),
     
     mainPanel(
