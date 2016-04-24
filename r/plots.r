@@ -22,19 +22,21 @@ require(scales)
 plot_results <- function(
   results
 ) {
-  # results <- fit_cts("Ragsdale, bacon", "19960-4")
+  # results <- fit_cts("Ragsdale, bacon", "19960-4", c('Epic', 'INPC'), 1, 1)
 
-  plt <- ggplot(
-    results
-    ,aes(x = date.r, y = result)
-    ) +
-    geom_line() +
-    theme_bw() +
-    ggtitle("Patient Result History") +
-    scale_y_continuous(
-      name = "Result"
-      # ,labels = comma
-      ) + scale_x_datetime(name = "Date")
+  plt <- results %>% 
+    ggplot(
+      aes(x = date.r, y = result)
+      ) +
+      geom_line() +
+      geom_point(aes(shape = fhir, color = fhir)) +
+      theme_bw() +
+      ggtitle("Patient Result History") +
+      scale_y_continuous(
+        name = "Result"
+        # ,labels = comma
+        ) + scale_x_datetime(name = "Date")
+  # plt
   return(plt)
 }
 
