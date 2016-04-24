@@ -96,6 +96,7 @@ fit_cts <- function(
         ,order = cts.order
         ,ctrl = car_control(
           trace = TRUE
+          ,n.ahead=60
           # ,vri = TRUE
           # ,ccv = "MNCT"
           )
