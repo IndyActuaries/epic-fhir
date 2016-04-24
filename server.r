@@ -13,6 +13,7 @@ require(tidyr)
 
 source('r/load_data.r', chdir=TRUE)
 source('r/models.r', chdir=TRUE)
+source('r/plots.r', chdir=TRUE)
 
 #' ### LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
 
@@ -123,21 +124,26 @@ shinyServer(function(input, output) {
     )
   })
   
-    
-  output$distPlot <- renderPlot({
-    hist(rnorm(50))
-  })
-  
   output$trace_fhir <- renderPrint({ input$select_fhir })
   
-  output$labsTable <- renderDataTable({
+  GetModelResults <- reactive({
     fit_cts(
       input$select_name
       ,input$select_loinc
       ,input$select_fhir
       ,input$scale_input
       ,input$order_input
-    ) %>%
+      ,input$maxlim_input
+      ,input$minlim_input
+    )
+  })
+  
+  
+  output$labsTable <- renderDataTable({
+    GetModelResults() %>% 
+      mutate(
+        stdev = sqrt(svar)
+        ) %>%
       dplyr::select(
         FHIR_Source=fhir
         ,Date_Time=date.r
@@ -145,7 +151,12 @@ shinyServer(function(input, output) {
         ,Units=result_units
         ,sser
         ,svar
+        ,stdev
       )
+  })
+  
+  output$labsPlot <- renderPlot({
+    GetModelResults() %>% plot_results()
   })
   
 })
