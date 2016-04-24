@@ -148,6 +148,7 @@ extract_results.fieldnames = [
     'loinc',
     'fhir',
     'result',
+    'date',
     ]
 
 def _get_patient_name(patient_url):
