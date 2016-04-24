@@ -1,20 +1,12 @@
-#' ## Code Owners: Kyle Baird
-#' ### OWNERS ATTEST TO THE FOLLOWING:
-#'   * The `master` branch will meet Milliman QRM standards at all times.
-#'   * Deliveries will only be made from code in the `master` branch.
-#'   * Review/Collaboration notes will be captured in Pull Requests (prior to merging).
-#' 
-#' 
+#' ## Code Owners: Kyle Baird, Shea Parkes
+#'
 #' ### Objective:
 #'   * Load the data for analytics into native R data structures so it is easy to work with
-#' 
+#'
 #' ### Developer Notes:
 #'   * <none>
 
-path.dir.source <- paste0(
-  Sys.getenv("USERPROFILE")
-  ,"/repos/epic-fhir/data/"
-  )
+path.dir.source <- '../data/'
 
 #' ## LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
 
