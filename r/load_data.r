@@ -6,6 +6,7 @@
 #' ### Developer Notes:
 #'   * <none>
 
+require(ifultools)
 path.dir.source <- '../data/'
 
 #' ## LIBRARIES, LOCATIONS, LITERALS, ETC. GO ABOVE HERE
@@ -22,13 +23,15 @@ df.results <- read.csv(
   ,header = TRUE
   ,stringsAsFactors = FALSE
   )
-df.results$date.r <- as.POSIXct(strptime(df.results$date, "%Y-%m-%dT%H:%M:%SZ"))
+df.results$date.r <- as.POSIXct(strptime(substr(df.results$date, 1, 19), "%Y-%m-%dT%H:%M:%S"))
+df.results$name <- properCase(df.results$name)
 df.patients <- read.csv(
   paste0(path.dir.source, "patients.csv")
   ,header = TRUE
   ,stringsAsFactors = FALSE
   )
 df.patients$dob.r <- as.Date(df.patients$dob, "%Y-%m-%dT%H:%M:%SZ")
+df.patients$name <- properCase(df.patients$name)
 
 #'
 #' _ _ _
